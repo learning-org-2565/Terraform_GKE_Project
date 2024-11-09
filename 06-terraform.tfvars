@@ -1,0 +1,1 @@
+gcp_region1 = "us-central1"
