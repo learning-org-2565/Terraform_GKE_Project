@@ -55,6 +55,7 @@ jobs:
           elif [ "${{ github.event.inputs.actions }}" == "destroy" ]; then
             terraform destroy -auto-approve
           elif [ "${{github.event.inputs.actions }}" == "plan" ]; then
+            terraform plan
           else
             echo "Invalid action specified. Use 'apply' or 'destroy'."
             exit 1
