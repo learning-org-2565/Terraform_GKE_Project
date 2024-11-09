@@ -8,7 +8,6 @@ on:
 jobs:
   terraform:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3  # Check out the code from the repository
@@ -16,8 +15,14 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1.1.0
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}' 
+          project_id: ${{ secrets.GCP_PROJECT_ID }}  # GCP Project ID from GitHub Secrets
+          install_components: 'beta'  # Install any additional components you need
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v0.4.0
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'  # Service account key from GitHub 
+
 
       - name: Authenticate with GCP
         run: |
