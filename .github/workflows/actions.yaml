@@ -1,9 +1,18 @@
 name: Terraform Deploy to GCP
 
 on:
-  push:
-    branches:
-      - main  # Run the workflow on pushes to the main branch
+  
+  workflow_dispatch: 
+    inputs:
+      actions:
+        description: apply or destroy
+        options:
+          - apply
+          - destroy
+        default: none
+        required: true
+        type: choice
+        
 
 jobs:
   terraform:
@@ -42,5 +51,7 @@ jobs:
         # Generate a plan file to review changes
 
       - name: Apply Terraform
-        run: terraform apply -auto-approve tfplan
+        run: terraform ${{inputs.actions}} -auto-approve tfplan
        # Apply the changes to GCP
+      - name: Destroy Terraform
+        run: terraform ${{inputs.actions}} -auto-approve
