@@ -1,0 +1,44 @@
+name: Terraform Deploy to GCP
+
+on:
+  push:
+    branches:
+      - main  # Run the workflow on pushes to the main branch
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3  # Check out the code from the repository
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Authenticate with GCP
+        run: |
+          gcloud auth activate-service-account --key-file="${{ secrets.GCP_CREDENTIALS }}"
+        shell: bash
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2  # Sets up Terraform CLI
+
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ./Terraform_GKE_Project # Update with the directory of your Terraform files  Terraform_GKE_Project
+
+      - name: Validate Terraform
+        run: terraform validate
+        working-directory: ./Terraform_GKE_Project  # Validate configuration to catch errors early
+
+      - name: Plan Terraform
+        run: terraform plan -out=tfplan
+        working-directory: ./Terraform_GKE_Project  # Generate a plan file to review changes
+
+      - name: Apply Terraform
+        run: terraform apply -auto-approve tfplan
+        working-directory: ./Terraform_GKE_Project  # Apply the changes to GCP
