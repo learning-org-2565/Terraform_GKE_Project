@@ -9,7 +9,8 @@ on:
         options:
           - apply
           - destroy
-        default: none
+          - plan
+        default: plan
         required: true
         type: choice
         
@@ -53,6 +54,7 @@ jobs:
             terraform apply -auto-approve
           elif [ "${{ github.event.inputs.actions }}" == "destroy" ]; then
             terraform destroy -auto-approve
+          elif [ "${{github.event.inputs.actions }}" == "plan" ]; then
           else
             echo "Invalid action specified. Use 'apply' or 'destroy'."
             exit 1
