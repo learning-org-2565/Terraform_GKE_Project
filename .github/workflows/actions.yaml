@@ -43,18 +43,8 @@ jobs:
         # Update with the directory of your Terraform files  Terraform_GKE_Project
 
       - name: Validate Terraform
-        run: terraform validate
-         # Validate configuration to catch errors early
-
-      #- name: Plan Terraform
-       # run: terraform plan -out=tfplan
-        # Generate a plan file to review changes
-
-      - name: Apply Terraform
-        run: terraform ${{inputs.actions}} -auto-approve tfplan
-       # Apply the changes to GCP
-      - name: Destroy Terraform
-        run: terraform ${{inputs.actions}} -auto-approve tfplan
+        run: terraform validate  
+        
       - name: Terraform Apply or Destroy
         run: |
           if [ "${{ github.event.inputs.actions }}" == "apply" ]; then
