@@ -39,8 +39,8 @@ jobs:
 
       - name: Plan Terraform
         run: terraform plan -out=tfplan
-        working-directory: ./Terraform_GKE_Project  # Generate a plan file to review changes
+        # Generate a plan file to review changes
 
       - name: Apply Terraform
         run: terraform apply -auto-approve tfplan
-        working-directory: ./Terraform_GKE_Project  # Apply the changes to GCP
+       # Apply the changes to GCP
