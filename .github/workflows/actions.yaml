@@ -46,8 +46,8 @@ jobs:
         run: terraform validate
          # Validate configuration to catch errors early
 
-      - name: Plan Terraform
-        run: terraform plan -out=tfplan
+      #- name: Plan Terraform
+       # run: terraform plan -out=tfplan
         # Generate a plan file to review changes
 
       - name: Apply Terraform
