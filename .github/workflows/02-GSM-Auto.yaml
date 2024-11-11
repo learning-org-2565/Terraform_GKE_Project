@@ -40,17 +40,36 @@ jobs:
           echo "Retrieved secret value: $SECRET_VALUE"
           echo "secret_value=$SECRET_VALUE" >> $GITHUB_ENV
 
-
-
       - name: Update template file with secret value
         run: |
-          # Replace placeholder in your template file
+          # Print the current contents of acm.ini for debugging
+          echo "Current acm.ini contents:"
+          cat acm.ini
+          
+          # Use sed to replace the placeholder with the secret value
+          # Use double quotes to allow variable expansion
           sed -i "s/PLACEHOLDER/${{ env.secret_value }}/g" acm.ini
 
-      - name: Debug - Print the updated file content (For verification purposes only)
+          # Print the updated contents of acm.ini for debugging
+          echo "Updated acm.ini contents:"
+          cat acm.ini
+
+      - name: Upload updated acm.ini to Google Secret Manager
         run: |
-          echo "Contents of acm.ini after replacement:"
-          cat acm.ini  # This will print the file content to verify the replacement
+          # Create or update the secret in Google Secret Manager with the contents of acm.ini
+          gcloud secrets versions add "$SECRET_NAME" --data-file=acm.ini
+
+
+
+      # - name: Update template file with secret value
+      #   run: |
+      #     # Replace placeholder in your template file
+      #     sed -i "s/PLACEHOLDER/${{ env.secret_value }}/g" acm.ini
+
+      # - name: Debug - Print the updated file content (For verification purposes only)
+      #   run: |
+      #     echo "Contents of acm.ini after replacement:"
+      #     cat acm.ini  # This will print the file content to verify the replacement
 
       - name: Upload updated acm.ini to Google Secret Manager
         run: |
