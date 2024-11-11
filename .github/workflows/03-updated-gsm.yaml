@@ -32,6 +32,8 @@ jobs:
           SECRET_NAME="${{ github.event.inputs.secret_name }}"
           SECRET_VALUE=$(gcloud secrets versions access latest --secret="$SECRET_NAME")
           echo "SECRET_VALUE=${SECRET_VALUE}" >> $GITHUB_ENV  # Store the secret value in an environment variable
+          echo "Retrieved secret value successfully."
+
 
       - name: Update template file with secret value
         run: |
