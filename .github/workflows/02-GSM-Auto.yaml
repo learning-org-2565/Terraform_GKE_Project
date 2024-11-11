@@ -45,3 +45,12 @@ jobs:
           SECRET_VALUE=$(gcloud secrets versions access latest --secret="$SECRET_NAME")
           echo "Retrieved secret value: $SECRET_VALUE"
           echo "secret_value=$SECRET_VALUE" >> $GITHUB_ENV
+
+
+
+      - name: Update template file with secret value
+        run: |
+          # Replace placeholder in your template file
+          sed -i "s/PLACEHOLDER/${{ env.secret_value }}/g" acm.ini
+         
+
