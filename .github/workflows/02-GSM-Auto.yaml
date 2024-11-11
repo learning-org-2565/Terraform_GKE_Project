@@ -61,5 +61,7 @@ jobs:
       - name: Upload updated acm.ini to Google Secret Manager
         run: |
           # Create or update the secret in Google Secret Manager with the contents of acm.ini
-          gcloud secrets versions add "$SECRET_NAME" --data-file=acm.ini
+          # gcloud secrets versions add "$SECRET_NAME" --data-file=acm.ini
+          gcloud secrets versions add "secret-auto-123" --data-file=acm.ini
+
 
