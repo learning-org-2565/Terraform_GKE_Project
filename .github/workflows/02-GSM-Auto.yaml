@@ -42,16 +42,16 @@ jobs:
       - name: Update template file with secret value
         run: |
           # Print the current contents of acm.ini for debugging
-          echo "Current acm.ini contents:"
-          cat acm.ini
+          # echo "Current acm.ini contents:"
+          # cat acm.ini
           
           # Use sed to replace the placeholder with the secret value
           # Use double quotes to allow variable expansion
           sed -i "s/PLACEHOLDER/${{ env.secret_value }}/g" acm.ini
 
           # Print the updated contents of acm.ini for debugging
-          echo "Updated acm.ini contents:"
-          cat acm.ini
+          # echo "Updated acm.ini contents:"
+          # cat acm.ini
 
       - name: Upload updated acm.ini to Google Secret Manager
         run: |
