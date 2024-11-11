@@ -1,19 +1,13 @@
 name: 14-gsm
 
 on:
-
-  push: 
-  workflow_dispatch: 
+  workflow_dispatch:
     inputs:
-      actions:
-        description: apply or destroy
-        options:
-          - apply
-          - destroy
-          - plan
-        default: plan
+      secret_name:
+        description: 'The name of the secret to update'
         required: true
-        type: choice
+        default: 'secret-auto-123'  # Optional default value
+
         
 
 jobs:
@@ -41,7 +35,7 @@ jobs:
         id: retrieve_secret
         run: |
           # Retrieve the secret value
-          SECRET_NAME="secret-auto-123"  # Replace with your actual secret name
+          SECRET_NAME="${{ github.event.inputs.secret_name }}"  # Replace with your actual secret name
           SECRET_VALUE=$(gcloud secrets versions access latest --secret="$SECRET_NAME")
           echo "Retrieved secret value: $SECRET_VALUE"
           echo "secret_value=$SECRET_VALUE" >> $GITHUB_ENV
@@ -62,6 +56,6 @@ jobs:
         run: |
           # Create or update the secret in Google Secret Manager with the contents of acm.ini
           # gcloud secrets versions add "$SECRET_NAME" --data-file=acm.ini
-          gcloud secrets versions add "secret-auto-123" --data-file=acm.ini
+          gcloud secrets versions add "$SECRET_NAME"--data-file=acm.ini
 
 
