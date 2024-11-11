@@ -1,0 +1,53 @@
+name: 15-updated-gsm
+
+on:
+  workflow_dispatch:
+    inputs:
+      secret_name:
+        description: 'The name of the secret to update'
+        required: true
+        default: 'secret-auto-123'  # Optional default value
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3  # Check out the code from the repository
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1.1.0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}  # GCP Project ID from GitHub Secrets
+          install_components: 'beta'  # Install any additional components you need
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v0.4.0
+        with:
+            credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Retrieve secret from Google Secret Manager
+        id: retrieve_secret
+        run: |
+          SECRET_NAME="${{ github.event.inputs.secret_name }}"
+          SECRET_VALUE=$(gcloud secrets versions access latest --secret="$SECRET_NAME")
+          echo "SECRET_VALUE=${SECRET_VALUE}" >> $GITHUB_ENV  # Store the secret value in an environment variable
+
+      - name: Update template file with secret value
+        run: |
+          # Avoid printing sensitive information
+          # echo "Current acm.ini contents:"
+          # cat acm.ini
+          
+          # Use sed to replace the placeholder with the secret value
+          sed -i "s/PLACEHOLDER/${{ env.SECRET_VALUE }}/g" acm.ini
+
+          # Avoid printing sensitive information
+          # echo "Updated acm.ini contents:"
+          # cat acm.ini
+
+      - name: Upload updated acm.ini to Google Secret Manager
+        run: |
+          echo "Secret name: ${{ github.event.inputs.secret_name }}"
+          ls -la
+          gcloud secrets versions add "${{ github.event.inputs.secret_name }}" --data-file=acm.ini
