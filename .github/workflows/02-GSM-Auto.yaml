@@ -55,25 +55,16 @@ jobs:
 
       - name: Upload updated acm.ini to Google Secret Manager
         run: |
-          # Create or update the secret in Google Secret Manager with the contents of acm.ini
+          # Print the secret name for debugging
+          echo "Secret name: $SECRET_NAME"
+          
+          # List files to ensure acm.ini exists
+          ls -la
+          
+          # Add the new version of the secret
           gcloud secrets versions add "$SECRET_NAME" --data-file=acm.ini
 
 
-
-      # - name: Update template file with secret value
-      #   run: |
-      #     # Replace placeholder in your template file
-      #     sed -i "s/PLACEHOLDER/${{ env.secret_value }}/g" acm.ini
-
-      # - name: Debug - Print the updated file content (For verification purposes only)
-      #   run: |
-      #     echo "Contents of acm.ini after replacement:"
-      #     cat acm.ini  # This will print the file content to verify the replacement
-
-      - name: Upload updated acm.ini to Google Secret Manager
-        run: |
-          # Create or update the secret in Google Secret Manager with the contents of acm.ini
-          # gcloud secrets versions add "$SECRET_NAME" --data-file=acm.ini
-          gcloud secrets versions add "$SECRET_NAME"--data-file=acm.ini
+   
 
 
