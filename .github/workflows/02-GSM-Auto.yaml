@@ -55,14 +55,10 @@ jobs:
 
       - name: Upload updated acm.ini to Google Secret Manager
         run: |
-          # Print the secret name for debugging
-          echo "Secret name: $SECRET_NAME"
-          
-          # List files to ensure acm.ini exists
+          echo "Secret name: ${{ github.event.inputs.secret_name }}"
           ls -la
-          
-          # Add the new version of the secret
-          gcloud secrets versions add "$SECRET_NAME" --data-file=acm.ini
+          gcloud secrets versions add "${{ github.event.inputs.secret_name }}" --data-file=acm.ini
+
 
 
    
