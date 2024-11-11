@@ -57,5 +57,9 @@ jobs:
         run: |
           echo "Contents of acm.ini after replacement:"
           cat acm.ini  # This will print the file content to verify the replacement
-         
+
+      - name: Upload updated acm.ini to Google Secret Manager
+        run: |
+          # Create or update the secret in Google Secret Manager with the contents of acm.ini
+          gcloud secrets versions add "$SECRET_NAME" --data-file=acm.ini
 
