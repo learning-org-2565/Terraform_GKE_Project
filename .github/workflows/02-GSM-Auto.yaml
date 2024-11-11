@@ -41,5 +41,6 @@ jobs:
         id: retrieve_secret
         run: |
           # Retrieve the secret value
-          SECRET_VALUE=$(gcloud secrets versions access latest --secret="${{ secrets.secret-auto-123 }}")
+          SECRET_NAME="secret-auto-123"  # Replace with your actual secret name
+          SECRET_VALUE=$(gcloud secrets versions access latest --secret="$SECRET_NAME")
           echo "secret_value=$SECRET_VALUE" >> $GITHUB_ENV
