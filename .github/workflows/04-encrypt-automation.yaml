@@ -47,18 +47,39 @@ jobs:
           encrypted_password=$(echo -n "${{ env.root_password }}" | openssl enc -aes-256-cbc -a -salt -pass pass:${{ secrets.ENCRYPTION_KEY }})
           echo "encrypted_password=${encrypted_password}" >> $GITHUB_ENV
 
-
+          # Step 1: Upload Encrypted Password to Secret Manager
       - name: Upload Encrypted Password to Secret Manager
         id: upload_password
         run: |
           gcloud secrets versions add ${{ github.event.inputs.secret_name }} --data-file=<(echo "${{ env.encrypted_password }}") --project=${{ github.event.inputs.project_name }}
-          latest_version=$(gcloud secrets versions list ${{ github.event.inputs.secret_name }} --project=${{ github.event.inputs.project_name }} --format="value(name)" --limit=1)
-          echo "latest_version=${latest_version}" >> $GITHUB_OUTPUT
-
+          latest_password_version=$(gcloud secrets versions list ${{ github.event.inputs.secret_name }} --project=${{ github.event.inputs.project_name }} --format="value(name)" --limit=1)
+          echo "latest_password_version=$latest_password_version" >> $GITHUB_OUTPUT
+      
+      # Step 2: Update acm.ini with the Encrypted Password
       - name: Update acm.ini with the Encrypted Password
         run: |
-          cp acm.ini acm.ini.bak  # Create a backup
-          sed -i "s|^root_password=.*|root_password=${{ steps.upload_password.outputs.latest_version }}|" acm.ini
+          # Read the acm.ini file
+          IFS=$'\n' read -d '' -r -a acm_lines < acm.ini
+      
+          # Replace the root_password value
+          for i in "${!acm_lines[@]}"; do
+            if [[ ${acm_lines[$i]} == root_password=* ]]; then
+              acm_lines[$i]="root_password=${{ steps.upload_password.outputs.latest_password_version }}"
+              break
+            fi
+          done
+      
+          # Write the updated content back to the file
+          printf '%s\n' "${acm_lines[@]}" > acm.ini
+
+      # Step 3: Upload Updated acm.ini to Secret Manager
+      - name: Upload acm.ini to Secret Manager
+        run: |
+          gcloud secrets versions add ${{ github.event.inputs.secret_name }} --data-file=acm.ini --project=${{ github.event.inputs.project_name }}
+          latest_acm_version=$(gcloud secrets versions list ${{ github.event.inputs.secret_name }} --project=${{ github.event.inputs.project_name }} --format="value(name)" --limit=1)
+          echo "latest_acm_version=${latest_acm_version}" >> $GITHUB_ENV
+
+      
 
 
       # - name: Upload Encrypted Password to Secret Manager
