@@ -1,0 +1,104 @@
+name: secure-gsm-update
+on:
+  workflow_dispatch:
+    inputs:
+      secret_name:
+        description: 'The name of the secret to update'
+        required: true
+        default: 'secret-auto-123'
+      secret_version:
+        description: 'Version of the secret to retrieve (default is 1)'
+        required: false
+
+permissions:
+  contents: read
+  id-token: write  # Required for Google Cloud auth
+
+env:
+  TEMP_FILE: 'temp_config.ini'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1.1.0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          install_components: 'beta'
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v0.4.0
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Retrieve and process secret
+        id: retrieve_secret
+        run: |
+          # Set error handling
+          set -euo pipefail
+          
+          SECRET_NAME="${{ github.event.inputs.secret_name }}"
+          SECRET_VERSION="${{ github.event.inputs.secret_version }}"
+          
+          # Validate inputs
+          if [ -z "$SECRET_NAME" ]; then
+            echo "Error: Secret name is required"
+            exit 1
+          fi
+          
+          # Use the provided secret version, or default to version 1
+          if [ -z "$SECRET_VERSION" ]; then
+            SECRET_VERSION="1"
+          fi
+          
+          # Retrieve secret and mask it in logs
+          SECRET_VALUE=$(gcloud secrets versions access "$SECRET_VERSION" --secret="$SECRET_NAME")
+          echo "::add-mask::$SECRET_VALUE"
+          
+          # Create a temporary file with restricted permissions
+          touch "$TEMP_FILE"
+          chmod 600 "$TEMP_FILE"
+          
+          # Update the template file
+          if [ ! -f acm.ini ]; then
+            echo "Error: acm.ini template not found"
+            exit 1
+          fi
+          
+          # Process the file securely
+          sed "s/PLACEHOLDER/$SECRET_VALUE/g" acm.ini > "$TEMP_FILE"
+          
+          # Clear sensitive variable
+          SECRET_VALUE=""
+
+      - name: Upload to Google Secret Manager
+        run: |
+          if [ ! -f "$TEMP_FILE" ]; then
+            echo "Error: Processed file not found"
+            exit 1
+          fi
+          
+          echo "Uploading new secret version..."
+          gcloud secrets versions add "${{ github.event.inputs.secret_name }}" --data-file="$TEMP_FILE"
+
+      - name: Cleanup sensitive files
+        if: always()  # Run even if previous steps fail
+        run: |
+          if [ -f "$TEMP_FILE" ]; then
+            shred -u "$TEMP_FILE"  # Securely delete the file
+          fi
+          if [ -f "acm.ini" ]; then
+            shred -u acm.ini
+          fi
+
+      - name: Verify cleanup
+        if: always()
+        run: |
+          if [ -f "$TEMP_FILE" ] || [ -f "acm.ini" ]; then
+            echo "Error: Sensitive files still present"
+            exit 1
+          fi
