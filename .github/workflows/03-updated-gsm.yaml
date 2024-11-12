@@ -7,6 +7,9 @@ on:
         description: 'The name of the secret to update'
         required: true
         default: 'secret-auto-123'  # Optional default value
+      secret_version:
+        description: 'Version of the secret to retrieve (default is 1)'
+        required: false
 
 jobs:
   terraform:
@@ -26,13 +29,30 @@ jobs:
         with:
             credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
+
       - name: Retrieve secret from Google Secret Manager
         id: retrieve_secret
         run: |
           SECRET_NAME="${{ github.event.inputs.secret_name }}"
-          SECRET_VALUE=$(gcloud secrets versions access 1 --secret="$SECRET_NAME")
+          SECRET_VERSION="${{ github.event.inputs.secret_version }}"
+          
+          # Use the provided secret version, or default to version 1
+          if [ -z "$SECRET_VERSION" ]; then
+            SECRET_VERSION="1"
+          fi
+          
+          SECRET_VALUE=$(gcloud secrets versions access "$SECRET_VERSION" --secret="$SECRET_NAME")
           echo "SECRET_VALUE=${SECRET_VALUE}" >> $GITHUB_ENV  # Store the secret value in an environment variable
           echo "Retrieved secret value successfully."
+
+
+      # - name: Retrieve secret from Google Secret Manager
+      #   id: retrieve_secret
+      #   run: |
+      #     SECRET_NAME="${{ github.event.inputs.secret_name }}"
+      #     SECRET_VALUE=$(gcloud secrets versions access 1 --secret="$SECRET_NAME")
+      #     echo "SECRET_VALUE=${SECRET_VALUE}" >> $GITHUB_ENV  # Store the secret value in an environment variable
+      #     echo "Retrieved secret value successfully."
 
 
       - name: Update template file with secret value
