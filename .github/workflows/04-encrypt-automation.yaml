@@ -54,9 +54,16 @@ jobs:
           latest_version=$(gcloud secrets versions list ${{ github.event.inputs.secret_name }} --project=${{ github.event.inputs.project_name }} --format="value(name)" --limit=1)
           echo "latest_version=${latest_version}" >> $GITHUB_ENV
 
+
       - name: Update acm.ini with the Encrypted Password
         run: |
-          sed -i "s/^root_password=.*/root_password=${{ env.encrypted_password }}/" acm.ini
+          cp acm.ini acm.ini.bak  # Create a backup
+          sed -i "s|^root_password=.*|root_password=${{ env.encrypted_password }}|" acm.ini
+
+
+      # - name: Update acm.ini with the Encrypted Password
+      #   run: |
+      #     sed -i "s/^root_password=.*/root_password=${{ env.encrypted_password }}/" acm.ini
 
       - name: Upload acm.ini to Secret Manager
         run: |
