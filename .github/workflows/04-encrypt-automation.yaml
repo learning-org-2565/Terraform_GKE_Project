@@ -47,24 +47,38 @@ jobs:
           encrypted_password=$(echo -n "${{ env.root_password }}" | openssl enc -aes-256-cbc -a -salt -pass pass:${{ secrets.ENCRYPTION_KEY }})
           echo "encrypted_password=${encrypted_password}" >> $GITHUB_ENV
 
+
       - name: Upload Encrypted Password to Secret Manager
         id: upload_password
         run: |
           gcloud secrets versions add ${{ github.event.inputs.secret_name }} --data-file=<(echo "${{ env.encrypted_password }}") --project=${{ github.event.inputs.project_name }}
           latest_version=$(gcloud secrets versions list ${{ github.event.inputs.secret_name }} --project=${{ github.event.inputs.project_name }} --format="value(name)" --limit=1)
-          echo "latest_version=${latest_version}" >> $GITHUB_ENV
-
-
-      - name: Debug Encrypted Password
-        run: |
-          echo "Encrypted Password: ${{ env.encrypted_password }}"
-
-
+          echo "latest_version=${latest_version}" >> $GITHUB_OUTPUT
 
       - name: Update acm.ini with the Encrypted Password
         run: |
           cp acm.ini acm.ini.bak  # Create a backup
-          sed -i "s|^root_password=.*|root_password=${{ env.encrypted_password }}|" acm.ini
+          sed -i "s|^root_password=.*|root_password=${{ steps.upload_password.outputs.latest_version }}|" acm.ini
+
+
+      # - name: Upload Encrypted Password to Secret Manager
+      #   id: upload_password
+      #   run: |
+      #     gcloud secrets versions add ${{ github.event.inputs.secret_name }} --data-file=<(echo "${{ env.encrypted_password }}") --project=${{ github.event.inputs.project_name }}
+      #     latest_version=$(gcloud secrets versions list ${{ github.event.inputs.secret_name }} --project=${{ github.event.inputs.project_name }} --format="value(name)" --limit=1)
+      #     echo "latest_version=${latest_version}" >> $GITHUB_ENV
+
+
+      # - name: Debug Encrypted Password
+      #   run: |
+      #     echo "Encrypted Password: ${{ env.encrypted_password }}"
+
+
+
+      # - name: Update acm.ini with the Encrypted Password
+      #   run: |
+      #     cp acm.ini acm.ini.bak  # Create a backup
+      #     sed -i "s|^root_password=.*|root_password=${{ env.encrypted_password }}|" acm.ini
 
 
       # - name: Update acm.ini with the Encrypted Password
