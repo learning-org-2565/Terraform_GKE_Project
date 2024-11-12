@@ -7,7 +7,7 @@ on:
         description: 'Enter the secret name (e.g., secret-auto-123-dev)'
         required: true
       project_name:
-        description: 'Enter the GCP project name'
+        description: 'Enter the GCP project name(e.g., turnkey-guild-441104-f3 )'
         required: true
       env:
         description: 'Enter the environment (e.g., dev, prod)'
