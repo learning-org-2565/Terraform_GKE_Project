@@ -1,4 +1,4 @@
-name: Secret Management Workflow
+name: 16-Secret Management Workflow
 
 on:
   workflow_dispatch:
