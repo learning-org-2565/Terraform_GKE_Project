@@ -25,6 +25,9 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4  # Updated to latest version
+        with:
+          path: 'Terraform_GKE_Project'
+       
       
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2  # Updated to latest version
@@ -49,6 +52,8 @@ jobs:
             -backend-config="prefix=gke-cluster"
       
       - name: Terraform Validate
+        working-directory: Terraform_GKE_Project/01-Basics-Terraform
+          
         run: terraform validate
       
       - name: Terraform Plan
