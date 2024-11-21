@@ -15,6 +15,10 @@ terraform {
       version = ">= 5.32.0"
     }
   }
+  backend "gcs" {
+    bucket = "terraform-statefile-bucket-tf"
+    prefix = "dev-env/gke-cluster-basic-tf"    
+  }
 }
 
 
