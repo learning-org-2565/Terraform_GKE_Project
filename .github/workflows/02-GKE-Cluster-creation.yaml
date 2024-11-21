@@ -1,0 +1,62 @@
+name: GKE Cluster Creation 
+
+on:
+  
+  workflow_dispatch: 
+    inputs:
+      actions:
+        description: apply or destroy
+        options:
+          - apply
+          - destroy
+          - plan
+        default: plan
+        required: true
+        type: choice
+        
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3  # Check out the code from the repository
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1.1.0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}  # GCP Project ID from GitHub Secrets
+          install_components: 'beta'  # Install any additional components you need
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v0.4.0
+        with:
+            credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+
+     
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2  # Sets up Terraform CLI
+
+      - name: Initialize Terraform
+        run: terraform init
+        # Update with the directory of your Terraform files  Terraform_GKE_Project
+      - name: Refresh Terraform State
+        run: terraform refresh
+
+      - name: Validate Terraform
+        run: terraform validate  
+
+      - name: Terraform Apply or Destroy
+        run: |
+          if [ "${{ github.event.inputs.actions }}" == "apply" ]; then
+            terraform apply -auto-approve
+          elif [ "${{ github.event.inputs.actions }}" == "destroy" ]; then
+            terraform destroy -auto-approve
+          elif [ "${{github.event.inputs.actions }}" == "plan" ]; then
+            terraform plan
+          else
+            echo "Invalid action specified. Use 'apply' or 'destroy'."
+            exit 1
+          fi
