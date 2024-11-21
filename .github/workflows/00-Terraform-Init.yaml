@@ -1,0 +1,34 @@
+name: Terraform Initialize
+
+on:
+  workflow_dispatch:
+    inputs:
+      init-folder:
+        description: Give me which folder i need to initialize
+        default: 01-Basics-Terraform
+        type: choice
+        options:
+          - standard-gke-infra
+          - 01-Basics-Terraform
+
+jobs:
+  terraform-init:
+    name: Terraform Initialize
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Terraform_GKE_Project/${{inputs.init-folder}}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: 'Terraform_GKE_Project'
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform Initialize
+        run: terraform init
