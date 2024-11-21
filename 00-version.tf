@@ -1,3 +1,5 @@
+
+/*
 # provide the required versions 
 
 # terraform gcp provider block
@@ -16,5 +18,6 @@ terraform {
     }
   }
 }
+*/
 
 
