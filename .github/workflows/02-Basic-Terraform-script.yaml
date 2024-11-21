@@ -49,10 +49,9 @@ jobs:
           terraform_wrapper: false  # Recommended for better output
       
       - name: Terraform Initialize
-        run: |
-          terraform init \
-            -backend-config="bucket=${{ secrets.TERRAFORM_STATE_BUCKET }}" \
-            -backend-config="prefix=gke-cluster"
+        run: terraform init 
+            # \-backend-config="bucket=${{ secrets.TERRAFORM_STATE_BUCKET }}" \
+            # -backend-config="prefix=gke-cluster"
       
       - name: Terraform Validate          
         run: terraform validate
