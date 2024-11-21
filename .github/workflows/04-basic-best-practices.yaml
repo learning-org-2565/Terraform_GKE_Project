@@ -49,11 +49,11 @@ jobs:
       - name: Check Terraform Initialization
         id: terraform_init_check
         run: |
-          if [ -d ".terraform" ]; then
-            echo "::set-output name=initialized::true"
-          else
-            echo "::set-output name=initialized::false"
-          fi
+            if [ -d ".terraform" ]; then
+                echo "initialized=true" >> $GITHUB_OUTPUT
+            else
+                echo "initialized=false" >> $GITHUB_OUTPUT
+            fi
 
       - name: Terraform Validate
         if: steps.terraform_init_check.outputs.initialized == 'true'
