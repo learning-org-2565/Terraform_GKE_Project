@@ -1,4 +1,4 @@
-name: GKE Cluster Creation 
+name: 01-Basic Terraform Script
 on:
   workflow_dispatch: 
     inputs:
