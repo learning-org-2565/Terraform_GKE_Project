@@ -16,6 +16,9 @@ jobs:
   terraform:
     name: 'Terraform Infrastructure'
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Terraform_GKE_Project/01-Basics-Terraform
     
     # Add these permissions to ensure proper access
     permissions:
@@ -51,9 +54,7 @@ jobs:
             -backend-config="bucket=${{ secrets.TERRAFORM_STATE_BUCKET }}" \
             -backend-config="prefix=gke-cluster"
       
-      - name: Terraform Validate
-        working-directory: Terraform_GKE_Project/01-Basics-Terraform
-          
+      - name: Terraform Validate          
         run: terraform validate
       
       - name: Terraform Plan
