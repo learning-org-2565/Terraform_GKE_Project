@@ -1,0 +1,94 @@
+name: Basics best practices
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: 
+    inputs:
+      actions:
+        description: 'Terraform Action'
+        required: true
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+        default: plan
+      
+jobs:
+  terraform:
+    name: 'Terraform Infrastructure'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Terraform_GKE_Project/01-Basics-Terraform
+    
+    # Add these permissions to ensure proper access
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: 'Terraform_GKE_Project'
+      
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          install_components: 'beta'
+      
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+     
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+      
+      # Run terraform init only if .tf files have changed
+      - name: Terraform Initialize
+        if: steps.tf-files-changed.outputs.changed == 'true'
+        run: terraform init
+      
+      # Run terraform validate only if .tf files have changed
+      - name: Terraform Validate
+        if: steps.tf-files-changed.outputs.changed == 'true'
+        run: terraform validate
+      
+      # Check if .tf files have changed
+      - id: tf-files-changed
+        uses: tj-actions/verify-changed-files@v13
+        with:
+          files: |
+            *.tf
+            
+      - name: Terraform Plan
+        if: github.event.inputs.actions == 'plan' && steps.tf-files-changed.outputs.changed == 'true'
+        run: |
+          terraform plan -out=tfplan
+          terraform show -no-color tfplan > plan_output.txt
+          cat plan_output.txt
+      
+      - name: Terraform Apply
+        if: github.event.inputs.actions == 'apply' && steps.tf-files-changed.outputs.changed == 'true'
+        run: |
+          terraform apply -auto-approve
+      
+      - name: Terraform Destroy
+        if: github.event.inputs.actions == 'destroy' && steps.tf-files-changed.outputs.changed == 'true'
+        run: |
+          terraform destroy -auto-approve
+      
+      # Optional: Upload plan output as artifact
+      - name: Upload Plan Output
+        if: github.event.inputs.actions == 'plan' && steps.tf-files-changed.outputs.changed == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: plan_output.txt
+          retention-days: 5

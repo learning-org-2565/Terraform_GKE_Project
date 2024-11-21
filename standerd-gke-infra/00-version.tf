@@ -17,7 +17,7 @@ terraform {
   }
   backend "gcs" {
     bucket = "terraform-statefile-bucket-tf"
-    prefix = "dev-env/gke-cluster-public"    
+    prefix = "standerd-gke/gke-cluster-public"    
   }
 }
 
