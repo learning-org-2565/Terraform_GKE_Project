@@ -1,3 +1,5 @@
+
+/*
 # we are going to create VPC for our project
 # Resource VPC
 
@@ -14,3 +16,5 @@ resource "google_compute_subnetwork" "Subnet-label" {
     network = google_compute_network.my-vpc-label.id 
   
 }
+
+*/
