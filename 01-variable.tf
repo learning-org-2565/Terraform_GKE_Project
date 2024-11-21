@@ -1,3 +1,5 @@
+
+/*
 #we are going to create new variables for our project
 variable "gcp_project" {
   description = "we need to provide the project ID"
@@ -29,3 +31,4 @@ variable "boot_disk_image_name" {
   default = "debian-cloud/debian-12"
 
 }
+*/
