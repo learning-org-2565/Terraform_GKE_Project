@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: Terraform_GKE_Project/standard-gke-infra
+        working-directory: Terraform_GKE_Project/standerd-gke-infra
     
     # Add these permissions to ensure proper access
     permissions:
