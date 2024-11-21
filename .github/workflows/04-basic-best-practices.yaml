@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: Terraform_GKE_Project/standard-gke-infra
+        working-directory: Terraform_GKE_Project/01-Basics-Terraform
 
     steps:
       - name: Checkout Repository
