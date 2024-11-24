@@ -17,7 +17,7 @@ resource "google_compute_subnetwork" "private_gke_subnets" {
     private_ip_google_access = true 
     ip_cidr_range = "10.129.0.0/20"
     secondary_ip_range {
-        range_name = "kubernetes-pod-range"
+        range_name = "kubernetes-pod-range"  #mis/: given diff name pod range name
         ip_cidr_range = var.pod_ip_ranges
     }
 
