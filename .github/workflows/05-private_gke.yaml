@@ -1,4 +1,4 @@
-name: GKE Cluster Creation 
+name: Private GKE Cluster Creation 
 on:
   workflow_dispatch: 
     inputs:
@@ -14,7 +14,7 @@ on:
       
 jobs:
   terraform:
-    name: 'Terraform Infrastructure'
+    name: '01-private_gke_cluster'
     runs-on: ubuntu-latest
     defaults:
       run:
