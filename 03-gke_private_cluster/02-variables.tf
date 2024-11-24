@@ -29,7 +29,7 @@ variable "environment" {
 #business division  
 variable "business_divsion" {
     description = "name of the business, for what business you are creating this infra"
-    default = "tm_project"
+    default = "tmproject"
     type = string
   
 }
