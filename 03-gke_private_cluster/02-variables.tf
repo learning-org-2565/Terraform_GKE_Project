@@ -52,15 +52,17 @@ variable "pod_ip_ranges" {
 # Service IP ranges
 variable "service_ip_ranges" {
   description = "all services using in this IPs only"
-  default = "10.12.0.0/21"
   type = string
+  default = "10.12.0.0/21"
+  
 }
 
 #master IP ranges
 
 variable "master_node_ip_ranges" {
   description = " master node or control plane is going to use this IPs"
-  default = "10.13.0.0./28"
   type = string
+  default = "10.13.0.0/28"
+  
 }
 
