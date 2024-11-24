@@ -1,5 +1,5 @@
 # Input Variables
-# GCP Project
+# GCP Project   
 variable "gcp_project" {
   description = "Project in which GCP Resources to be created"
   type = string
