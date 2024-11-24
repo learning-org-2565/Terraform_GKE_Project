@@ -7,7 +7,7 @@ terraform {
         version = ">= 5.42.0"
     }
   }
-  backend "gcs_state_remote" {
+  backend "gcs" {
     name = "terraform-statefile-bucket-tf"
     prefix = "gke_private/remote_state"
   }

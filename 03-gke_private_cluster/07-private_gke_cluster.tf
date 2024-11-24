@@ -2,6 +2,10 @@ resource "google_container_cluster" "private_gke_cluster" {
     name = "${local.name}-private-cluster"
     location = var.gcp_region
     node_locations = data.google_compute_zones.available.names
+    node_config {
+    service_account = "githubactions-sa@turnkey-guild-441104-f3.iam.gserviceaccount.com"
+
+  }
 
     # we are creating one default node pool but immidiately we will remove it . default is not recommanded
     remove_default_node_pool = true 

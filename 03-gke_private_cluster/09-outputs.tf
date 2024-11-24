@@ -14,8 +14,3 @@ output "gke_loation" {
 output "gke_endpoints" {
   value = google_container_cluster.private_gke_cluster.endpoint
 }
-
-
-output "gke_endpoints" {
-  value = google_container_cluster.private_gke_cluster.master_version
-}
