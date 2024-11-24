@@ -13,7 +13,7 @@ resource "google_container_cluster" "private_gke_cluster" {
 
     # network
     network = google_compute_network.private_gke_vpc.self_link
-    subnetwork = google_compute_network.private_gke_subnets
+    subnetwork = google_compute_subnetwork.private_gke_subnets
 
     deletion_protection = false 
 
