@@ -10,7 +10,7 @@ variable "gcp_project" {
 variable "gcp_region1" {
   description = "Region in which GCP Resources to be created"
   type = string
-  default = "us-east1"
+  default = "us-central1"
 }
 
 # GCP Compute Engine Machine Type
