@@ -8,7 +8,7 @@ terraform {
     }
   }
   backend "gcs" {
-    bubucket = "terraform-statefile-bucket-tf"
+    bucket = "terraform-statefile-bucket-tf"
     prefix = "gke_private/remote_state"
   }
 }
