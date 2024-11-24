@@ -52,8 +52,8 @@ variable "pod_ip_ranges" {
 # Service IP ranges
 variable "service_ip_ranges" {
   description = "all services using in this IPs only"
-  type = string
   default = "10.12.0.0/21"
+  type = string
 }
 
 #master IP ranges
