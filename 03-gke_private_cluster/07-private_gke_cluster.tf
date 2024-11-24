@@ -28,8 +28,8 @@ resource "google_container_cluster" "private_gke_cluster" {
 
     # IP addredd allocations
     ip_allocation_policy {
-      cluster_secondary_range_name = google_compute_network.private_gke_subnets.secondary_ip_range[0].range_name
-      services_secondary_range_name = google_compute_network.private_gke_subnets.secondary_ip_range[1].range_name
+      cluster_secondary_range_name = google_compute_subnetwork.private_gke_subnets
+      services_secondary_range_name = google_compute_subnetwork.private_gke_subnets
     }
 
     master_authorized_networks_config {

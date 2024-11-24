@@ -1,0 +1,137 @@
+name: Private GKE Cluster Management
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform Action'
+        required: true
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+        default: plan
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+        default: dev
+
+env:
+  TERRAFORM_VERSION: "1.5.7"
+  WORKING_DIR: Terraform_GKE_Project/03-gke_private_cluster
+  TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
+
+jobs:
+  terraform:
+    name: 'Terraform for Private GKE'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+        
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event.inputs.environment }}
+      cancel-in-progress: false
+      
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Setup Terraform Cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
+          key: ${{ runner.os }}-terraform-${{ hashFiles('**/*.tf') }}
+          restore-keys: |
+            ${{ runner.os }}-terraform-
+            
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          install_components: 'beta,gke-gcloud-auth-plugin'
+          
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+          token_format: 'access_token'
+          
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+          
+      - name: Create Terraform Plugin Directory
+        run: |
+          mkdir -p ${{ env.TF_PLUGIN_CACHE_DIR }}
+          
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+        
+      - name: Terraform Initialize
+        run: |
+          terraform init \
+            -backend-config="bucket=${{ secrets.GCS_BUCKET }}" \
+            -backend-config="prefix=${{ github.event.inputs.environment }}"
+            
+      - name: Terraform Workspace
+        run: |
+          terraform workspace select ${{ github.event.inputs.environment }} || \
+          terraform workspace new ${{ github.event.inputs.environment }}
+          
+      - name: Terraform Validate
+        run: terraform validate
+        
+      - name: Terraform Plan
+        if: github.event.inputs.action == 'plan'
+        run: |
+          terraform plan \
+            -var-file="environments/${{ github.event.inputs.environment }}.tfvars" \
+            -out=tfplan
+          terraform show -no-color tfplan > plan_output.txt
+        
+      - name: Upload Plan Output
+        if: github.event.inputs.action == 'plan'
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-${{ github.event.inputs.environment }}
+          path: ${{ env.WORKING_DIR }}/plan_output.txt
+          retention-days: 5
+          
+      - name: Terraform Apply
+        if: github.event.inputs.action == 'apply'
+        run: |
+          terraform apply \
+            -var-file="environments/${{ github.event.inputs.environment }}.tfvars" \
+            -auto-approve
+            
+      - name: Terraform Destroy
+        if: github.event.inputs.action == 'destroy'
+        run: |
+          terraform destroy \
+            -var-file="environments/${{ github.event.inputs.environment }}.tfvars" \
+            -auto-approve
+
+      - name: Cleanup Terraform Directory
+        if: always()
+        run: |
+          rm -rf .terraform
+          rm -f terraform.tfstate*
+          rm -f tfplan
