@@ -1,6 +1,6 @@
 resource "google_container_cluster" "private_gke_cluster" {
     name = "${local.name}-private-cluster"
-    location = var.gcp_region
+    location = us-east1-b
     node_locations = data.google_compute_zones.available.names
     node_config {
     service_account = "githubactions-sa@turnkey-guild-441104-f3.iam.gserviceaccount.com"
