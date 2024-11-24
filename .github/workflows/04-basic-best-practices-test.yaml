@@ -1,9 +1,7 @@
 name: 04-best practice
 
 on:
-  push:
-    branches:
-      - main
+  
   workflow_dispatch:
     inputs:
       actions:

@@ -25,7 +25,4 @@ resource "google_compute_subnetwork" "private_gke_subnets" {
         range_name = "SERVICE IPs range"
         ip_cidr_range = var.service_ip_ranges
     }
-    
-
-  
 }
