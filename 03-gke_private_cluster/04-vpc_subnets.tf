@@ -11,11 +11,11 @@ resource "google_compute_network" "private_gke_vpc" {
 # subnets
 resource "google_compute_subnetwork" "private_gke_subnets" {
     description = "we are going to create subnets for our cluster"
-    name = "${local.name}-${var.gcp_region}subnets"
+    name = "${local.name}-${var.gcp_region}-subnets"
     region = var.gcp_region
     network = google_compute_network.private_gke_vpc.id
     private_ip_google_access = true 
-    ip_cidr_range = var.subnets_ip_ranges
+    ip_cidr_range = "10.129.0.0/20"
     secondary_ip_range {
         range_name = "k8s POD ranges"
         ip_cidr_range = var.pod_ip_ranges
