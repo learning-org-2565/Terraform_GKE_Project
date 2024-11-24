@@ -17,12 +17,12 @@ resource "google_compute_subnetwork" "private_gke_subnets" {
     private_ip_google_access = true 
     ip_cidr_range = "10.129.0.0/20"
     secondary_ip_range {
-        range_name = "k8s POD ranges"
+        range_name = "kubernetes-pod-range"
         ip_cidr_range = var.pod_ip_ranges
     }
 
     secondary_ip_range {
-        range_name = "SERVICE IPs range"
+        range_name = "kubernetes-services-range" # did not given - 
         ip_cidr_range = var.service_ip_ranges
     }
 }
