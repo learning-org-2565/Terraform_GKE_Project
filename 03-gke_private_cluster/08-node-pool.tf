@@ -3,9 +3,9 @@
 
 resource "google_container_node_pool" "private_gke_nodepool" {
   name = "${local.name}-nodepool"
-  location = "us-central1"
+  location = "us-east1-b"
   cluster = google_container_cluster.private_gke_cluster.name 
-  initial_node_count = 1
+  initial_node_count = 2
   autoscaling {
     min_node_count = 1
     max_node_count = 3
@@ -20,8 +20,8 @@ resource "google_container_node_pool" "private_gke_nodepool" {
     
     ]
     tags = [tolist(google_compute_firewall.fw_ssh.target_tags)[0]]
-    disk_size_gb = 20
-    disk_type = "pd-standard"
+    disk_size_gb = 10
+    disk_type = "pd-balanced"
 
   }
 }
