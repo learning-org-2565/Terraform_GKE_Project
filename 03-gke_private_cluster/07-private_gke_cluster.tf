@@ -1,7 +1,7 @@
 resource "google_container_cluster" "private_gke_cluster" {
     name = "${local.name}-private-cluster"
-    location = "asia-southeast1-a"
-    node_locations = data.google_compute_zones.available.names
+    location = "asia-southeast1"
+    node_locations     = ["asia-southeast1-b", "asia-southeast1-c"]
     node_config {
     service_account = "githubactions-sa@turnkey-guild-441104-f3.iam.gserviceaccount.com"
 
