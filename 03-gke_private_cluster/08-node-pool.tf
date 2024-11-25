@@ -3,7 +3,7 @@
 
 resource "google_container_node_pool" "private_gke_nodepool" {
   name = "${local.name}-nodepool"
-  location = "us-east1-b"
+  location = "us-east1-c"
   cluster = google_container_cluster.private_gke_cluster.name 
   initial_node_count = 2
   autoscaling {
