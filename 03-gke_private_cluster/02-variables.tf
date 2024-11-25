@@ -9,7 +9,7 @@ variable "gcp_project" {
 variable "gcp_region" {
   description = "whatever application you deploy all the data located in this region"
   type = string
-  default = "us-east1"
+  default = "asia-southeast1"
 }
 
 #machine type for the vm instance
