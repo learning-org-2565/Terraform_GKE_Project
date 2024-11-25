@@ -3,14 +3,14 @@
 
 resource "google_container_node_pool" "private_gke_nodepool" {
   name = "${local.name}-nodepool"
-  location = "asia-southeast1"
+  location = "asia-southeast1-a"
   cluster = google_container_cluster.private_gke_cluster.name 
-  initial_node_count = 2
-  autoscaling {
-    min_node_count = 1
-    max_node_count = 3
-    location_policy = "ANY"
-  }
+  initial_node_count = 1
+  # autoscaling {
+  #   min_node_count = 1
+  #   max_node_count = 3
+  #   location_policy = "ANY"
+  # }
   node_config {
     preemptible = true
     machine_type = var.gcp_machine_type
