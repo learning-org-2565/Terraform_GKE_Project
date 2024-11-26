@@ -1,4 +1,4 @@
-name: GKE Cluster Creation 
+name: GKE for deployment practice
 on:
   workflow_dispatch: 
     inputs:
