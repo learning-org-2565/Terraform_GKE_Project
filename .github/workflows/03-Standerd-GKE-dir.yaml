@@ -1,4 +1,4 @@
-name: GKE for deployment practice
+name: GKE for k8s deployment practice
 on:
   workflow_dispatch: 
     inputs:
@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: Terraform_GKE_Project/standerd-gke-infra
+        working-directory: Terraform_GKE_Project/02-standerd-gke-infra
     
     # Add these permissions to ensure proper access
     permissions:
@@ -79,5 +79,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plan
-          path: Terraform_GKE_Project/standard-gke-infra/plan_output.txt
+          path: Terraform_GKE_Project/02-standerd-gke-infra/plan_output.txt
           retention-days: 5
