@@ -1,4 +1,4 @@
-name: 05-Private GKE Cluster Creation 
+name: 05-Private GKE Cluster Creation (old)
 on:
   workflow_dispatch: 
     inputs:
