@@ -1,4 +1,4 @@
-name: GKE for k8s deployment practice
+name: 03-standerd GKE for k8s deployment 
 on:
   workflow_dispatch: 
     inputs:
