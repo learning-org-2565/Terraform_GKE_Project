@@ -15,7 +15,7 @@ variable "gcp_region" {
 #machine type for the vm instance
 variable "gcp_machine_type" {
   description = "setup the machine type for the vm instances which you are going to use in the nodes"
-  default = "e2-small"
+  default = "e2-standard-4" # 4 vCPU, 16 GB RAM
   type = string
 }
 

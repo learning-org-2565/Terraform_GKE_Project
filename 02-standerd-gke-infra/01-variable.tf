@@ -17,7 +17,7 @@ variable "gcp_region1" {
 variable "machine_type" {
   description = "Compute Engine Machine Type"
   type = string
-  default = "e2-small"
+  default = "e2-standard-4" # 4 vCPU, 16 GB RAM
 }
 
 
