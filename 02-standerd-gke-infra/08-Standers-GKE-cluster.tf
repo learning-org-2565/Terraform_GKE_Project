@@ -1,7 +1,8 @@
 # Resource: GKE Cluster
 resource "google_container_cluster" "gke_cluster" {
   name     = "${local.name}-gke-cluster"
-  location = "us-east1-b"
+  location = var.gcp_region1
+  node_locations = ["asia-southeast1-b", "asia-southeast1-c"]
   node_config {
     service_account = "githubactions-sa@turnkey-guild-441104-f3.iam.gserviceaccount.com"
 

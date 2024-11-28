@@ -1,9 +1,9 @@
 # Resource: GKE Node Pool 1
 resource "google_container_node_pool" "nodepool_1" {
   name       = "${local.name}-node-pool-1"
-  location   = "us-east1-b"
+  location   = var.gcp_region1
   cluster    = google_container_cluster.gke_cluster.name
-  node_count = 2
+  node_count = 1
   node_config {
     preemptible  = true
     machine_type = var.machine_type
