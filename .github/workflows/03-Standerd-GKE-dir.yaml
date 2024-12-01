@@ -81,3 +81,10 @@ jobs:
           name: terraform-plan
           path: Terraform_GKE_Project/02-standerd-gke-infra/plan_output.txt
           retention-days: 5
+      - name: Log Terraform State File URL
+        run: |
+          echo "Terraform state is stored at: gs://terraform-statefile-bucket-tf/terraform.tfstate"
+      - name: Log Terraform State File URL
+        run: |
+          gsutil ls gs://terraform-statefile-bucket-tf/terraform.tfstate
+        
