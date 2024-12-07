@@ -24,4 +24,12 @@ terraform {
     }
   }
   required_version = ">= 0.13"
+
+}
+
+terraform {
+  backend "gcs" {
+    bucket = "terraform-statefile-bucket-tf"
+    prefix = "gke/terraform.tfstate"
+  }
 }
