@@ -1,61 +1,91 @@
-/**
- * Copyright 2018 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 variable "project_id" {
-  description = "The project ID to host the cluster in"
-
-}
-
-variable "cluster_name_suffix" {
-  description = "A suffix to append to the default cluster name"
-  default     = ""
+  description = "The GCP project ID"
+  type        = string
 }
 
 variable "region" {
-  description = "The region to host the cluster in"
-
+  description = "The GCP region for the cluster"
+  type        = string
 }
 
-variable "network" {
-  description = "The VPC network to host the cluster in"
-
+variable "vpc_name" {
+  description = "Name of the VPC"
+  type        = string
+  default     = "gke-vpc"
 }
 
-variable "subnetwork" {
-  description = "The subnetwork to host the cluster in"
-
+variable "subnet_name" {
+  description = "Name of the subnet"
+  type        = string
 }
 
-variable "ip_range_pods" {
-  description = "The secondary ip range to use for pods"
-
+variable "subnet_cidr" {
+  description = "CIDR block for the subnet"
+  type        = string
 }
 
-variable "ip_range_services" {
-  description = "The secondary ip range to use for services"
-
+variable "pod_cidr" {
+  description = "CIDR block for Pods"
+  type        = string
 }
 
-variable "compute_engine_service_account" {
-  description = "Service account to associate to the nodes in the cluster"
-
+variable "service_cidr" {
+  description = "CIDR block for Services"
+  type        = string
 }
 
-variable "enable_binary_authorization" {
-  description = "Enable BinAuthZ Admission controller"
+variable "cluster_name" {
+  description = "Name of the GKE cluster"
+  type        = string
+}
+
+variable "node_machine_type" {
+  description = "Machine type for the nodes"
+  type        = string
+  default     = "e2-medium"
+}
+
+variable "node_disk_size" {
+  description = "Disk size for each node"
+  type        = number
+  default     = 100
+}
+
+variable "node_count" {
+  description = "Number of nodes in the node pool"
+  type        = number
+  default     = 3
+}
+
+variable "min_node_count" {
+  description = "Minimum number of nodes for autoscaling"
+  type        = number
+  default     = 1
+}
+
+variable "max_node_count" {
+  description = "Maximum number of nodes for autoscaling"
+  type        = number
+  default     = 5
+}
+
+variable "preemptible_nodes" {
+  description = "Whether to use preemptible VMs"
+  type        = bool
   default     = false
-  
+}
+
+variable "gke_service_account" {
+  description = "Service account for GKE nodes"
+  type        = string
+}
+
+variable "master_cidr_block" {
+  description = "CIDR block for the master nodes"
+  type        = string
+}
+
+variable "authorized_cidr_block" {
+  description = "Authorized CIDR block for public access"
+  type        = string
 }
