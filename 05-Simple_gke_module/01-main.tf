@@ -36,8 +36,13 @@ resource "google_compute_subnetwork" "gke_subnet" {
 resource "google_container_cluster" "primary_gke_cluster" {
   name     = var.cluster_name
   location = var.region
+  node_locations = ["us-central1-b","us-central1-c"]
   network  = google_compute_network.gke_vpc.self_link
   subnetwork = google_compute_subnetwork.gke_subnet.self_link
+  node_config {
+    service_account = "githubactions-sa@turnkey-guild-441104-f3.iam.gserviceaccount.com"
+
+  }
 
   # Master node configuration
   remove_default_node_pool = true
