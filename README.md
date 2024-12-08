@@ -2,3 +2,12 @@
 # Build infra gke
 #Added right SA   
 cntl+A+/  ====> To comment , uncomment
+
+Title: "Docker Compose vs Kubernetes"
+
+Feature	Docker Compose	Kubernetes
+Scaling	Manual	Automated
+Fault Tolerance	No	Yes
+Networking	Limited	Advanced
+Monitoring	Minimal	Comprehensive
+Production Ready	No	Yes
