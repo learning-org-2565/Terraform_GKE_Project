@@ -11,3 +11,5 @@ Fault Tolerance	No	Yes
 Networking	Limited	Advanced
 Monitoring	Minimal	Comprehensive
 Production Ready	No	Yes
+
+# we made mistake insted of k8s changes , we have pushed terraform files to ke repo
