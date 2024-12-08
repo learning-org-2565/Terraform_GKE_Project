@@ -48,7 +48,7 @@ variable "node_machine_type" {
 variable "node_disk_size" {
   description = "Disk size for each node"
   type        = number
-  default     = 20
+  default     = 5
 }
 
 variable "node_count" {
