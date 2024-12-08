@@ -39,6 +39,7 @@ resource "google_container_cluster" "primary_gke_cluster" {
   node_locations = ["us-central1-b","us-central1-c"]
   network  = google_compute_network.gke_vpc.self_link
   subnetwork = google_compute_subnetwork.gke_subnet.self_link
+  deletion_protection = false
   node_config {
     service_account = "githubactions-sa@turnkey-guild-441104-f3.iam.gserviceaccount.com"
 
