@@ -67,23 +67,7 @@ jobs:
         if: github.event.inputs.actions == 'apply'
         run: |
           terraform apply -auto-approve
-
-      # **New Step Added Below**
-      - name: Force Unlock Terraform State
-        if: github.event.inputs.actions == 'destroy'
-        run: |
-          echo "Checking for existing Terraform state lock..."
-          LOCK_FILE="gs://terraform-statefile-bucket-tf/gke/terraform.tfstate/default.tflock"
           
-          # Check if the lock file exists
-          if gsutil -q stat "$LOCK_FILE"; then
-            echo "Lock file found. Removing lock..."
-            gsutil rm "$LOCK_FILE"
-            echo "Lock file removed successfully."
-          else
-            echo "No lock file found. Proceeding with destroy."
-          fi
-      
       - name: Terraform Destroy
         if: github.event.inputs.actions == 'destroy'
         run: |
@@ -97,5 +81,6 @@ jobs:
           name: terraform-plan
           path: Terraform_GKE_Project/05-Simple_gke_module/plan_output.txt
           retention-days: 5
+
      
         
