@@ -42,19 +42,19 @@ variable "cluster_name" {
 variable "node_machine_type" {
   description = "Machine type for the nodes"
   type        = string
-  default     = "e2-medium"
+  default     = "e2-standard"
 }
 
 variable "node_disk_size" {
   description = "Disk size for each node"
   type        = number
-  default     = 10
+  default     = 05
 }
 
 variable "node_count" {
   description = "Number of nodes in the node pool"
   type        = number
-  default     = 3
+  default     = 2
 }
 
 variable "min_node_count" {
