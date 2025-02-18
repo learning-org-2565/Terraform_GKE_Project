@@ -1,0 +1,65 @@
+{
+  "image": {
+    "repository": "docker-github",
+    "tag": "latest",
+    "pullPolicy": "IfNotPresent"
+  },
+  "nameOverride": "",
+  "fullnameOverride": "",
+  "serviceAccount": {
+    "create": true,
+    "name": "github"
+  },
+  "podAnnotations": {},
+  "podSecurityContext": {
+    "runAsNonRoot": true,
+    "runAsUser": 1000
+  },
+  "securityContext": {},
+  "service": {
+    "type": "ClusterIP",
+    "port": 80
+  },
+  "ingress": {
+    "enabled": true,
+    "className": "nginx",
+    "annotations": {},
+    "hosts": [
+      {
+        "host": "github.com",
+        "paths": [
+          {
+            "path": "/",
+            "pathType": "Prefix"
+          }
+        ]
+      }
+    ]
+  },
+  "resources": {
+    "limits": {
+      "cpu": "0.5",
+      "memory": "512Mi"
+    },
+    "requests": {
+      "cpu": "0.5",
+      "memory": "512Mi"
+    }
+  },
+  "autoscaling": {
+    "enabled": true,
+    "minReplicas": 1,
+    "maxReplicas": 10,
+    "targetCPUUtilization": 80
+  },
+  "nodeSelector": {},
+  "tolerations": [],
+  "affinity": {},
+  "persistence": [
+    {
+      "name": "",
+      "mountPath": "",
+      "size": "1Gi"
+    }
+  ]
+}
